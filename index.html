@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💦 Water Gang - Choose Your Position</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(circle, #ff4d6d, #ff758f, #ff9ebb);
+      color: white;
+      text-align: center;
+      animation: bgPulse 5s infinite alternate ease-in-out;
+    }
+    @keyframes bgPulse {
+      0% { background: radial-gradient(circle, #ff4d6d, #ff758f, #ff9ebb); }
+      100% { background: radial-gradient(circle, #ff2e63, #ff6f91, #ffa6c1); }
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      max-width: 420px;
+      animation: popIn 1s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    h1 {
+      margin-bottom: 5px;
+      font-size: 28px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+    }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, #ff006e, #ff477e);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255, 0, 110, 0.7);
+    }
+    .footer {
+      margin-top: 25px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💦 Water Gang 💦</h1>
+    <h2>🍑 Choose Your Favorite Position 🍆</h2>
+
+    <!-- Fun, sex-themed options -->
+    <button onclick="choose('a')">🐶 Doggy Style 💥</button>
+    <button onclick="choose('b')">❤️ Missionary 😍</button>
+    <button onclick="choose('c')">🏇 Riding 🔥</button>
+  </div>
+
+  <div class="footer">
+    Made with ❤️ by <b>Water Gang 💧</b>
+  </div>
+
+  <!-- Click audio -->
+  <audio id="clickAudio">
+    <source src="{{ url_for('static', filename='click.mp3') }}" type="audio/mpeg">
+  </audio>
+
+  <script>
+    async function choose(option) {
+      const audio = document.getElementById("clickAudio");
+      audio.currentTime = 0;  // restart audio
+      audio.play();
+
+      // Wait for audio to finish (~2s) before sending request
+      audio.onended = async function() {
+        const formData = new FormData();
+        formData.append("choice", option);
+
+        try {
+          const response = await fetch("/choose", {
+            method: "POST",
+            body: formData
+          });
+          const html = await response.text();
+          document.open();
+          document.write(html);
+          document.close();
+        } catch (err) {
+          alert("❌ Error connecting to backend.");
+        }
+      };
+    }
+  </script>
+</body>
+</html>
