@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💦 Water Gang - Hot Result</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff005c, #ff4d6d, #ff758f, #ff9ebb);
+            background-size: 300% 300%;
+            animation: sexyBg 6s infinite alternate ease-in-out;
+            color: white;
+            text-align: center;
+        }
+        @keyframes sexyBg {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        .result-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            max-width: 520px;
+            animation: popIn 0.8s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        h1 {
+            font-size: 30px;
+            margin-bottom: 15px;
+            animation: pulse 1.5s infinite;
+            text-shadow: 0 0 20px rgba(255,0,110,0.9);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .founders {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 0, 110, 1);
+            animation: fadeInUp 1s ease forwards;
+            opacity: 0;
+        }
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: white;
+            color: #ff006e;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255,0,110,0.4);
+        }
+        a:hover {
+            transform: scale(1.1);
+            background: #ffeff6;
+            box-shadow: 0 6px 14px rgba(255,0,110,0.6);
+        }
+        .footer {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-box">
+        <h1>{{ result|safe }}</h1>
+
+        <div class="founders">
+            💋 Brought to you by <b>ANKIT NIRALA</b> & <b>GAURAV NATH</b> 😏💦
+        </div>
+
+        <a href="/">🔙 Go Back</a>
+        <div class="footer">Made with ❤️🔥 by <b>Water Gang 💧</b></div>
+    </div>
+
+    <!-- Audio Player -->
+    <audio id="resultAudio">
+        <source id="audioSource" src="" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ✅ Safely get choice (empty string if None)
+        const choice = {{ choice|tojson|default('""', true) }};
+        console.log("Choice received:", choice);
+
+        // Pick audio file based on choice
+        let audioFile = "";
+        if (choice === "a") {
+            audioFile = "{{ url_for('static', filename='a.mp3') }}";
+        } else if (choice === "b") {
+            audioFile = "{{ url_for('static', filename='b.mp3') }}";
+        } else if (choice === "c") {
+            audioFile = "{{ url_for('static', filename='c.mp3') }}";
+        }
+
+        if (audioFile) {
+            const player = document.getElementById("resultAudio");
+            document.getElementById("audioSource").src = audioFile;
+            player.load();
+
+            // Small delay so DOM is ready
+            setTimeout(() => {
+                player.play().catch(err => {
+                    console.warn("Autoplay blocked:", err);
+                    const btn = document.createElement("a");
+                    btn.href = "#";
+                    btn.textContent = "🔊 Play Sound";
+                    btn.style.display = "block";
+                    btn.style.marginTop = "15px";
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        player.play();
+                        btn.remove();
+                    };
+                    document.querySelector(".result-box").appendChild(btn);
+                });
+            }, 300);
+        } else {
+            console.log("⚠️ No matching audio for choice:", choice);
+        }
+    </script>
+</body>
+</html>
